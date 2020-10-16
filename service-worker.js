@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/chunilmun/precache-manifest.2240c01ee1b63e518ccd87116ed5f099.js"
+  "/chunilmun/precache-manifest.a5a902f0c6b0fee8b152d973e4fe2fea.js"
 );
 
 self.addEventListener('message', (event) => {
