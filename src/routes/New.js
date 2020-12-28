@@ -35,7 +35,9 @@ const New = ({ userObj }) => {
   // }, []);
   return (
     <div>
-      <button onClick={createNew}>기초 1/2 생성하기</button>
+      <button className="buttonLogOut" onClick={createNew}>
+        기초 1/2 생성하기
+      </button>
     </div>
   );
 };

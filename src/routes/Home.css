@@ -5,6 +5,7 @@
   grid-gap: 15px;
   justify-content: center;
   padding: 100px;
+  
 }
 .item {
   background-color: white;
@@ -15,4 +16,9 @@
   padding: 30px 0;
   text-decoration: none;
   color: black;
+  
+}
+.count {
+  font-size : 20px;
+  color: #616169;
 }

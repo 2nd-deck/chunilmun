@@ -1,5 +1,6 @@
 import { authService, firebaseInstance } from "fbase";
 import React, { useState } from "react";
+import "./Auth.css";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -29,7 +30,6 @@ const Auth = () => {
       } else {
         data = await authService.signInWithEmailAndPassword(email, password);
       }
-      console.log(data);
     } catch (error) {
       setError(error.message);
     }
@@ -46,11 +46,10 @@ const Auth = () => {
       provider = new firebaseInstance.auth.GithubAuthProvider();
     }
     const data = await authService.signInWithPopup(provider);
-    console.log(data);
   };
   return (
-    <div>
-      <form onSubmit={onSubmit}>
+    <div className="authContainer">
+      <form onSubmit={onSubmit} className="container1">
         <input
           name="email"
           type="email"
@@ -58,6 +57,7 @@ const Auth = () => {
           required
           value={email}
           onChange={onChange}
+          className="authInput"
         />
         <input
           name="password"
@@ -66,15 +66,20 @@ const Auth = () => {
           required
           value={password}
           onChange={onChange}
+          className="authInput"
         />
-        <input type="submit" value={newAccount ? "Create Account" : "Log In"} />
-        {error}
+        <input
+          type="submit"
+          className="authInput authSubmit"
+          value={newAccount ? "Create Account" : "Log In"}
+        />
+        {error && <span className="authError">{error}</span>}
       </form>
-      <span onClick={toggleAccount}>
+      <span onClick={toggleAccount} className="authSwitch">
         {newAccount ? "Sign In" : "Create Account"}
       </span>
-      <div>
-        <button onClick={onSocialClick} name="google">
+      <div className="authBtns">
+        <button onClick={onSocialClick} name="google" className="authBtn">
           Continue with Google
         </button>
       </div>

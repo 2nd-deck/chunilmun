@@ -2,16 +2,30 @@ import { authService } from "fbase";
 import React from "react";
 import { useHistory } from "react-router-dom";
 
-const Profile = () => {
+import "./Profile.css";
+
+const Profile = ({ cardData }) => {
   const history = useHistory();
   const onLogOutClick = () => {
     authService.signOut();
     history.push("/");
   };
+
   return (
-    <>
-      <button onClick={onLogOutClick}>Log Out</button>
-    </>
+    <div>
+      <button className="buttonLogOut" onClick={onLogOutClick}>
+        Log Out
+      </button>
+      {/* <br />
+      <br />
+      {Boolean(cardData) ? (
+        <button className="buttonLogOut" onClick={resetCard}>
+          Reset Card
+        </button>
+      ) : (
+        <p></p>
+      )} */}
+    </div>
   );
 };
 export default Profile;

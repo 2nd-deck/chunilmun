@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { CardMain } from "./CardMain";
 import "./MainPage.css";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import dataSet from "./example.json";
+import { dbService } from "fbase";
 
-const MainPage = ({ cards, cardData, stage, save }) => {
+const MainPage = withRouter(({ cards, cardData, stage, colName, history }) => {
   const cardDataTotal = dataSet.data;
   const [view, setView] = useState(0);
   const [lang, setLang] = useState("korean");
@@ -16,11 +17,7 @@ const MainPage = ({ cards, cardData, stage, save }) => {
       stage: stage,
     }))
   );
-  // console.log(setCard);
   const pass = () => {
-    // let newStage = setCard[view].stage === 4 ? 4 : setCard[view].stage + 1;
-    // console.log(newStage);
-
     const modifiedData = setCard.map((item) =>
       item.id === setCard[view].id
         ? {
@@ -31,8 +28,6 @@ const MainPage = ({ cards, cardData, stage, save }) => {
     );
 
     setSetCard(modifiedData);
-    // setSetCard((data)=>{modifiedData.id===data.id});
-    // this.setState({ data: modifiedData });
     next();
   };
   const next = () => {
@@ -60,7 +55,6 @@ const MainPage = ({ cards, cardData, stage, save }) => {
       if (stage === 1 && card.stage !== 1) {
         newStage1.splice(newStage1.indexOf(card.id), 1);
         newStage2.push(card.id);
-        console.log(newStage2);
       } else if (stage === 2 && card.stage !== 2) {
         newStage2.splice(newStage2.indexOf(card.id), 1);
         newStage3.push(card.id);
@@ -69,10 +63,23 @@ const MainPage = ({ cards, cardData, stage, save }) => {
         newStage4.push(card.id);
       }
     });
-
     save();
   };
+  const save = async () => {
+    const newStage1 = Array.from(new Set(cardData.stage1));
+    const newStage2 = Array.from(new Set(cardData.stage2));
+    const newStage3 = Array.from(new Set(cardData.stage3));
+    const newStage4 = Array.from(new Set(cardData.stage4));
+    await dbService.doc(`${colName}/${cardData.id}`).update({
+      stage1: newStage1,
+      stage2: newStage2,
+      stage3: newStage3,
+      stage4: newStage4,
+    });
 
+    alert("저장되었습니다.");
+    history.push("/");
+  };
   return (
     <section className="container">
       <div className="back">
@@ -95,123 +102,24 @@ const MainPage = ({ cards, cardData, stage, save }) => {
       </div>
       <div></div>
       <div className="buttons">
-        <button className="button" onClick={next}>
-          FAIL
-        </button>
-        <span> Stage {setCard[view].stage} </span>
-        <button className="button" onClick={pass}>
-          PASS
-        </button>
+        <div>
+          <span> </span>
+          <button className="button" onClick={next}>
+            FAIL
+          </button>
+          <span> Stage {setCard[view].stage} </span>
+          <button className="button" onClick={pass}>
+            PASS
+          </button>
+          <span> </span>
+          <button className="save" onClick={updateSave}>
+            Save
+          </button>
+        </div>
       </div>
-      <div>
-        <button className="save" onClick={updateSave}>
-          Save
-        </button>
-      </div>
+      <div></div>
     </section>
   );
-};
+});
 
 export default MainPage;
-
-// class MainPage extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     const levelTotal = props.cards;
-//     this.state = {
-//       data: levelTotal,
-//       view: 0,
-//       lang: "korean",
-//     };
-//     this.pass = this.pass.bind(this);
-//     this.next = this.next.bind(this);
-//     this.pre = this.pre.bind(this);
-//     this.changeLang = this.changeLang.bind(this);
-//   }
-//   pass() {
-//     let newLevel =
-//       this.state.data[this.state.view].level === 4
-//         ? 4
-//         : this.state.data[this.state.view].level + 1;
-//     const modifiedData = this.state.data.map((item) =>
-//       item.id === this.state.data[this.state.view].id
-//         ? { ...item, level: newLevel }
-//         : item
-//     );
-//     this.setState({ data: modifiedData });
-//     this.next();
-//   }
-//   next() {
-//     let nextView =
-//       this.state.view === this.state.data.length - 1
-//         ? this.state.view
-//         : this.state.view + 1;
-//     this.setState({
-//       view: nextView,
-//       lang: "korean",
-//     });
-//   }
-//   pre() {
-//     let preView = this.state.view === 0 ? this.state.view : this.state.view - 1;
-//     this.setState({
-//       view: preView,
-//       lang: "korean",
-//     });
-//   }
-//   changeLang() {
-//     const newLang = this.state.lang === "korean" ? "english" : "korean";
-//     this.setState({
-//       lang: newLang,
-//     });
-//   }
-//   save() {
-//     alert("저장되었습니다.");
-//   }
-
-//   render() {
-//     // console.log(this.state.view);
-//     return (
-//       <section className="container">
-//         <div className="back">
-//           <Link to="/">←</Link>
-//         </div>
-//         <div className="status">
-//           <span>
-//             {this.props.level} 단계 ({this.state.view + 1} /{" "}
-//             {this.state.data.length})
-//           </span>
-//         </div>
-//         <div></div>
-//         <div className="sideButtons" onClick={this.pre}>
-//           <span>◀</span>
-//         </div>
-//         <div className="cards" onClick={this.changeLang}>
-//           <CardMain
-//             value={this.state.data[this.state.view]}
-//             lang={this.state.lang}
-//           />
-//         </div>
-//         <div className="sideButtons" onClick={this.next}>
-//           <span>▶</span>
-//         </div>
-//         <div></div>
-//         <div className="buttons">
-//           <button className="button" onClick={this.next}>
-//             FAIL
-//           </button>
-//           <span> Level {this.state.data[this.state.view].level} </span>
-//           <button className="button" onClick={this.pass}>
-//             PASS
-//           </button>
-//         </div>
-//         <div>
-//           <button className="save" onClick={this.save}>
-//             Save
-//           </button>
-//         </div>
-//       </section>
-//     );
-//   }
-// }
-
-// export default MainPage;
